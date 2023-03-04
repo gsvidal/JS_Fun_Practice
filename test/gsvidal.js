@@ -1,3 +1,6 @@
+// TODO change function() for () =>
+// Delete .only in line 10
+
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const filename = 'gsvidal';
@@ -94,86 +97,95 @@ describe.only('JS_Fun_Practice', function () {
       assert.equal(isNegative(-1), true);
     });
   });
-  describe('acc(func,initial)', function() {
-      it(`takes a function and an initial value and returns a function
-      that runs the initial function on each argument, accumulating the result`, function() {
-          let add2 = sol.acc(sol.add,0);
-          assert.equal(add2(1,2,4), 7);
+  describe('acc(func,initial)', function () {
+    it(`takes a function and an initial value and returns a function
+      that runs the initial function on each argument, accumulating the result`, function () {
+      let adding = sol.acc(sol.add, 0);
+      assert.equal(adding(1, 2, 4), 7);
 
-          let mul2 = sol.acc(sol.mul, 1);
-          assert.equal(mul2(1,2,4), 8);
+      let multiply = sol.acc(sol.mul, 1);
+      assert.equal(multiply(1, 2, 4), 8);
+    });
+  });
+  describe('accPartial(func,start,end)', function () {
+    it(`takes in a function, a start index, and an end index, and returns a function
+      that accumulates a subset of its arguments by applying the given function to
+      all elements between start and end (including both start and end)`, function () {
+      const addSecondToThird = sol.accPartial(sol.add, 1, 2);
+      expect(addSecondToThird(1, 2, 4, 8)).to.deep.equal([1, 6, 8]);
+
+      const multiplySecondToFourth = sol.accPartial(sol.mul, 1, 3);
+      expect(multiplySecondToFourth(1, 2, 4, 8, 16, 32)).to.deep.equal([1, 64, 16, 32]);
+    });
+  });
+  describe('accRecurse(func,initial)', function () {
+    it(`does what acc does but uses recursion`, function () {
+      let add = sol.accRecurse(sol.add, 0);
+      assert.equal(add(1, 2, 4), 7);
+
+      let mul = sol.accRecurse(sol.mul, 1);
+      assert.equal(mul(1, 2, 4), 8);
+    });
+  });
+  describe('fill(num)', function () {
+    it(`takes a number and returns an array with that many numbers equal to the given
+      number`, function () {
+      expect(sol.fill(3)).to.deep.equal([3, 3, 3]);
+
+      expect(sol.fill(5)).to.deep.equal([5, 5, 5, 5, 5]);
+
+      expect(sol.fill(-1)).to.throw;
+    });
+  });
+  describe('fillRecurse(num)', function () {
+    it(`does what fill does but uses recursion`, function () {
+      expect(sol.fillRecurse(3)).to.deep.equal([3, 3, 3]);
+
+      expect(sol.fillRecurse(5)).to.deep.equal([5, 5, 5, 5, 5]);
+    });
+  });
+  describe('set(...args)', function () {
+    it(`is given a list of arguments and returns an array with all duplicates
+      removed`, function () {
+      expect(sol.set(1, 1, 1, 2, 2, 2)).to.deep.equal([1, 2]);
+    });
+  });
+  describe('identityf(x)', function () {
+    it(`takes an argument and returns a function that returns that argument`, function () {
+      assert.equal(sol.identityf(3)(), 3);
+    });
+  });
+  describe('addf(a)', function () {
+    it(`adds from two invocations`, function () {
+      assert.equal(sol.addf(3)(4), 7);
+    });
+  });
+  describe('liftf(binary)', function () {
+    it(`takes a binary function, and makes it callable with two invocations`, function () {
+      assert.equal(sol.liftf(sol.addb)(3)(4), 7);
+      assert.equal(sol.liftf(sol.mulb)(5)(6), 30);
+    });
+  });
+  describe('pure(x,y)', function () {
+    it(`is a wrapper arround the impure function impure`, function () {
+      expect(sol.pure(20, 5)).to.deep.equal([6, 120]);
+      expect(sol.pure(25, 6)).to.deep.equal([7, 175]);
+    });
+  });
+  describe('curryb(binary, a)', function() {
+      it(`takes a binary function and an argument, and returns a function that can take
+      a second argument`, function() {
+          assert.equal(sol.curryb(sol.addb, 3)(4), 7);
+          assert.equal(sol.curryb(sol.mulb, 5)(6), 30);
       });
   });
-  // describe('accPartial(func,start,end)', function() {
-  //     it(`takes in a function, a start index, and an end index, and returns a function
-  //     that accumulates a subset of its arguments by applying the given function to
-  //     all elements between start and end`, function() {
-  //         const addSecondToThird = sol.accPartial(sol.add, 1, 3)
-  //         expect(addSecondToThird(1,2,4,8)).to.deep.equal([1,6,8]);
-  //     });
-  // });
-  // describe('accRecurse(func,initial)', function() {
-  //     it(`does what acc does but uses recursion`, function() {
-  //         let add = sol.accRecurse(sol.addb, 0)
-  //         assert.equal(add(1,2,4), 7);
-
-  //         let mul = sol.accRecurse(sol.mulb, 1);
-  //         assert.equal(mul(1,2,4), 8);
-  //     });
-  // });
-  // describe('fill(num)', function() {
-  //     it(`takes a number and returns an array with that many numbers equal to the given
-  //     number`, function() {
-  //         expect(sol.fill(3)).to.deep.equal([3,3,3]);
-  //     });
-  // });
-  // describe('fillRecurse(num)', function() {
-  //     it(`does what fill does but uses recursion`, function() {
-  //         expect(sol.fillRecurse(3)).to.deep.equal([3,3,3]);
-  //     });
-  // });
-  // describe('set(...args)', function() {
-  //     it(`is given a list of arguments and returns an array with all duplicates
-  //     removed`, function() {
-  //         expect(sol.set(1, 1, 1, 2, 2, 2)).to.deep.equal([1,2]);
-  //     });
-  // });
-  // describe('identityf(x)', function() {
-  //     it(`takes an argument and returns a function that returns that argument`, function() {
-  //         assert.equal(sol.identityf(3)(), 3);
-  //     });
-  // });
-  // describe('addf(a)', function() {
-  //     it(`adds from two invocations`, function() {
-  //         assert.equal(sol.addf(3)(4), 7);
-  //     });
-  // });
-  // describe('liftf(binary)', function() {
-  //     it(`takes a binary function, and makes it callable with two invocations`, function() {
-  //         assert.equal(sol.liftf(sol.addb)(3)(4), 7);
-  //         assert.equal(sol.liftf(sol.mulb)(5)(6), 30);
-  //     });
-  // });
-  // describe('pure(x,y)', function() {
-  //     it(`is a wrapper arround the impure function impure`, function() {
-  //         expect(sol.pure(20,5)).to.deep.equal([6,120]);
-  //         expect(sol.pure(25,6)).to.deep.equal([7,175]);
-  //     });
-  // });
-  // describe('curryb(binary, a)', function() {
-  //     it(`takes a binary function and an argument, and returns a function that can take
-  //     a second argument`, function() {
-  //         assert.equal(sol.curryb(sol.addb, 3)(4), 7);
-  //         assert.equal(sol.curryb(sol.mulb, 5)(6), 30);
-  //     });
-  // });
-  // describe('curry(func, ...outer)', function() {
-  //     it(`is a curry function generalized for any amount of arguments`, function() {
-  //         assert.equal(sol.curry(sol.add, 1,2,4)(4,2,1), 14);
-  //         assert.equal(sol.curry(sol.sub, 1,2,4)(4,2,1), -12);
-  //         assert.equal(sol.curry(sol.mul, 1,2,4)(4,2,1), 64);
-  //     });
-  // });
+  describe('curry(func, ...outer)', function() {
+      it(`is a curry function generalized for any amount of arguments`, function() {
+          assert.equal(sol.curry(sol.add, 1,2,4)(4,2,1), 14);
+          assert.equal(sol.curry(sol.sub, 1,2,4)(4,2,1), -12);
+          assert.equal(sol.curry(sol.mul, 1,2,4)(4,2,1), 64);
+      });
+  });
   // describe('inc(x)', function() {
   //     it(`shows multiple ways to create the inc function`, function() {
   //         assert.equal(sol.inc(5), 6);

@@ -81,6 +81,87 @@ const acc = (func, initial) => {
   };
 };
 
+const accPartial = (func, start, end) => {
+  return function (...nums) {
+    const subsetAdd = func(...nums.slice(start, end + 1));
+    nums.splice(start, end - start + 1, subsetAdd);
+    return nums;
+  };
+};
+
+const accRecurse = (func, initial) => {
+  return function (...nums) {
+    if (nums.length === 1) {
+      return func(nums[0], initial);
+    }
+    return func(accRecurse(func, initial)(...nums.slice(1)), nums[0]);
+  };
+};
+
+const fill = (num) => {
+  return num > 0 && Array(num).fill(num);
+};
+
+const fillRecurse = (num) => {
+  const array = [];
+  const func = () => {
+    if (array.length === num) {
+      return array;
+    }
+    array.push(num);
+    return func();
+  };
+  return func();
+};
+
+const set = (...args) => {
+  return [...new Set(args)];
+};
+
+const identityf = (x) => {
+  return () => {
+    return x;
+  };
+};
+
+const addf = (a) => {
+  return (b) => {
+    return a + b;
+  };
+};
+
+const liftf = (binary) => {
+  return (a) => {
+    return (b) => {
+      return binary(a, b);
+    };
+  };
+};
+
+const pure = (x, y) => {
+  const impure = (a, b) => {
+    b = b + 1;
+    a = a * b;
+    return [b,a]
+  };
+  const ar = impure(x, y);
+  return ar;
+};
+
+const curryb = (binary, a) => {
+  return (b) => {
+    return binary(a, b);
+  };
+}
+
+const curry = (func, ...outer) => {
+  return (b) => {
+    return func(outer, b);
+  };
+}
+
+
+
 module.exports = {
   identity,
   addb,
@@ -99,24 +180,22 @@ module.exports = {
   maxRecurse,
   not,
   acc,
-  // accPartial,
-  // accRecurse,
-  // fill,
-  // fillRecurse,
-  // set,
+  accPartial,
+  accRecurse,
+  fill,
+  fillRecurse,
+  set,
+  identityf,
+  addf,
+  liftf,
+  pure,
+  curryb,
 
-  // identityf,
-  // addf,
-  // liftf,
-  // pure,
-  // curryb,
-
-  // curry,
+  curry,
   // inc,
   // twiceUnary,
   // doubl,
   // square,
-
   // twice,
   // reverseb,
   // reverse,
@@ -128,7 +207,6 @@ module.exports = {
   // compose,
   // limitb,
   // limit,
-
   // genFrom,
   // genTo,
   // genFromTo,
@@ -140,7 +218,6 @@ module.exports = {
   // filterTail,
   // concatTwo,
   // concat,
-
   // concatTail,
   // gensymf,
   // gensymff,
@@ -152,7 +229,6 @@ module.exports = {
   // extract,
   // m,
   // addmTwo,
-
   // addm,
   // liftmbM,
   // liftmb,
@@ -164,7 +240,6 @@ module.exports = {
   // liftg,
   // arrayg,
   // continuizeu,
-  
   // continuize,
   // vector,
   // exploitVector,
